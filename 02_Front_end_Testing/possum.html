@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Opossum Search</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  background-color: #f8f8f8;
+  padding: 20px;
+  text-align: center;
+}
+
+.logo {
+  width: 292px; /* Match image width */
+  height: auto;
+}
+
+.search-box {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.search-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+  width: 400px;
+}
+
+.search-button {
+  padding: 10px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+
+.footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Opossum_2.jpg/292px-Opossum_2.jpg" alt="Opossum Logo" class="logo">
+</div>
+
+<div class="search-box">
+  <form action="https://www.google.com/search" method="get">
+    <input type="text" name="q" class="search-input" placeholder="Search...">
+    <input type="submit" value="Search" class="search-button" onclick="addOpossum()">
+  </form>
+</div>
+
+<script>
+function addOpossum() {
+  var query = document.querySelector('.search-input').value;
+  document.querySelector('.search-input').value = query + ' opossum';
+}
+</script>
+
+<div class="footer">
+Powered by opossum search
+</div>
+
+</body>
+</html>
