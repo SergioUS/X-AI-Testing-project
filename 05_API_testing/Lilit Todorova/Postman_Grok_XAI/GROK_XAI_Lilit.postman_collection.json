@@ -1,0 +1,346 @@
+{
+	"info": {
+		"_postman_id": "c68c6300-4681-4ae1-af60-091df7630354",
+		"name": "GROK_XAI_Lilit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20045004",
+		"_collection_link": "https://qa-team-6034.postman.co/workspace/QA-Team-Workspace~5334fa6b-4d38-4359-882a-db9d790f0495/collection/20045004-c68c6300-4681-4ae1-af60-091df7630354?action=share&source=collection_link&creator=20045004"
+	},
+	"item": [
+		{
+			"name": "devils-bridge-history",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1️⃣ Status check\r",
+							"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"let res = pm.response.json();\r",
+							"\r",
+							"// 2️⃣ Save dialogue ID\r",
+							"pm.test(\"Saved dialogue_id\", () => {\r",
+							"  pm.expect(res.id).to.be.a(\"string\");\r",
+							"  pm.environment.set(\"devilsbridge_id\", res.id);\r",
+							"});\r",
+							"\r",
+							"// 3️⃣ Capture latest reply\r",
+							"const reply1 = res.choices[0].message.content;\r",
+							"pm.test(\"History reply non-empty\", () => {\r",
+							"  pm.expect(reply1).to.be.a(\"string\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"// 4️⃣ Append to AllReplies\r",
+							"let all = JSON.parse(pm.environment.get(\"AllReplies\") || \"[]\");\r",
+							"all.push(reply1);\r",
+							"pm.environment.set(\"AllReplies\", JSON.stringify(all));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{xai}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"dialogue_id\": \"devils-bridge-001\",\r\n  \"messages\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"content\": \"Give me a brief history of Devil’s Bridge (Satani Kamurj) near Goris, Armenia.\"\r\n    }\r\n  ],\r\n  \"model\": \"grok-2\",\r\n  \"max_tokens\": 50,\r\n  \"async\": false,\r\n  \"temperature\": 0.4\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/chat/completions",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"chat",
+						"completions"
+					]
+				},
+				"description": "Request\n\n---\n\n- **Purpose**: Used for general text generation tasks where you provide a single prompt, and the model generates a continuation or response.\n    \n- **Use Case**: Ideal for simple, one-off text completions, such as generating text, answering a question, or continuing a story without a conversational context.\n    \n- **Request Structure**: Expects a single prompt field in the JSON payload\n    \n\nResponse:\n\n---\n\n- **Response**: Returns a single text output, typically in a field like choices\\[0\\].text.\n    \n- **Behavior**: Treats the input as a standalone prompt without maintaining conversational context.\n    \n\nUse:\n\n---\n\nUse /completions for simple, non-conversational tasks like generating a story, summarizing text, or answering a single question without needing context."
+			},
+			"response": []
+		},
+		{
+			"name": "devils-bridge-photo-spots",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1️⃣ Status check\r",
+							"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"let res = pm.response.json();\r",
+							"\r",
+							"// 2️⃣ Save new dialogue ID\r",
+							"pm.test(\"Saved dialogue_id\", () => {\r",
+							"  pm.expect(res.id).to.be.a(\"string\");\r",
+							"  pm.environment.set(\"devilsbridge_id\", res.id);\r",
+							"});\r",
+							"\r",
+							"// 3️⃣ Capture latest reply\r",
+							"const reply2 = res.choices[0].message.content;\r",
+							"pm.test(\"Photo‑spots reply non-empty\", () => {\r",
+							"  pm.expect(reply2).to.be.a(\"string\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"// 4️⃣ Append to AllReplies\r",
+							"let all = JSON.parse(pm.environment.get(\"AllReplies\") || \"[]\");\r",
+							"all.push(reply2);\r",
+							"pm.environment.set(\"AllReplies\", JSON.stringify(all));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{xai}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"dialogue_id\": \"{{devilsbridge_id}}\",\r\n  \"messages\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"content\": \"Recommend three best photo spots around Devil’s Bridge and include URLs if possible.\"\r\n    }\r\n  ],\r\n  \"model\": \"grok-2\",\r\n  \"max_tokens\": 50,\r\n  \"async\": false,\r\n  \"temperature\": 0.5\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/chat/completions",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"chat",
+						"completions"
+					]
+				},
+				"description": "Request\n\n---\n\n- **Purpose**: Designed for conversational interactions, supporting multi-turn dialogues where the model maintains context across a series of messages.\n    \n- **Use Case**: Best for chat-like applications, such as building a chatbot, simulating a conversation, or handling back-and-forth queries (e.g., customer support or interactive Q&A).\n    \n- **Request Structure**: Expects a messages array, where each message has a role (system, user, or assistant) and content. This allows you to define the conversation flow, including system instructions.\n    \n\nResponse:\n\n---\n\n- **Response**: Returns the assistant’s reply in a structured format, typically in choices\\[0\\].message.content, preserving the conversational context.\n    \n- **Behavior**: Maintains dialogue history within the messages array, enabling coherent multi-turn conversations.\n    \n\nUse:\n\n---  \n  \n\nUse /chat/completions for conversational applications where you need to simulate a dialogue, maintain context, or provide system-level instructions (e.g., \"Act as a teacher\")."
+			},
+			"response": []
+		},
+		{
+			"name": "devils-bridge-legend",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1️⃣ Status check\r",
+							"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"let res = pm.response.json();\r",
+							"\r",
+							"// 2️⃣ Save new dialogue ID\r",
+							"pm.test(\"Saved dialogue_id\", () => {\r",
+							"  pm.expect(res.id).to.be.a(\"string\");\r",
+							"  pm.environment.set(\"devilsbridge_id\", res.id);\r",
+							"});\r",
+							"\r",
+							"// 3️⃣ Capture latest reply\r",
+							"const reply3 = res.choices[0].message.content;\r",
+							"pm.test(\"Legend reply non-empty\", () => {\r",
+							"  pm.expect(reply3).to.be.a(\"string\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"// 4️⃣ Append to AllReplies\r",
+							"let all = JSON.parse(pm.environment.get(\"AllReplies\") || \"[]\");\r",
+							"all.push(reply3);\r",
+							"pm.environment.set(\"AllReplies\", JSON.stringify(all));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{xai}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"dialogue_id\": \"{{devilsbridge_id}}\",\r\n  \"messages\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"content\": \"Tell me a local legend that explains the name of Devil’s Bridge, and include a descriptive detail.\"\r\n    }\r\n  ],\r\n  \"model\": \"grok-2\",\r\n  \"max_tokens\": 50,\r\n  \"async\": false,\r\n  \"temperature\": 0.6\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/chat/completions",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"chat",
+						"completions"
+					]
+				},
+				"description": "**Build the Next Request**:  \n\n- To continue the conversation, include the previous messages (system prompt, user’s \"......\", and assistant’s \"...............\") and add the new user message."
+			},
+			"response": []
+		},
+		{
+			"name": "devils-bridge-best-time",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1️⃣ Ensure 200 OK\r",
+							"pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r",
+							"\r",
+							"let res = pm.response.json();\r",
+							"\r",
+							"// 2️⃣ Save updated dialogue ID\r",
+							"pm.environment.set(\"devilsbridge_id\", res.id);\r",
+							"\r",
+							"// 3️⃣ Capture reply content\r",
+							"const reply = res.choices[0].message.content;\r",
+							"\r",
+							"// 4️⃣ Assert the reply is non-empty\r",
+							"pm.test(\"Reply is non-empty\", () => {\r",
+							"  pm.expect(reply).to.be.a(\"string\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"// 5️⃣ Append to history\r",
+							"let all = JSON.parse(pm.environment.get(\"AllReplies\") || \"[]\");\r",
+							"all.push(reply);\r",
+							"pm.environment.set(\"AllReplies\", JSON.stringify(all));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{xai}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"dialogue_id\": \"{{devilsbridge_id}}\",\r\n  \"messages\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"content\": \"What’s the best time of year and time of day to visit Devil’s Bridge near Goris for ideal lighting and crowds?\"\r\n    }\r\n  ],\r\n  \"model\": \"grok-2\",\r\n  \"max_tokens\": 40,\r\n  \"async\": false,\r\n  \"temperature\": 0.5\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/chat/completions",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"chat",
+						"completions"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "xai",
+			"type": "string"
+		}
+	]
+}

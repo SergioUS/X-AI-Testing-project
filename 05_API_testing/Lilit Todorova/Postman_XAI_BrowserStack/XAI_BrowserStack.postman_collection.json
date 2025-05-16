@@ -1,0 +1,392 @@
+{
+	"info": {
+		"_postman_id": "1f79408c-49fb-42f5-a747-7bde11b56d1b",
+		"name": "XAI_BrowserStack",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20045004"
+	},
+	"item": [
+		{
+			"name": "List Builds",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// List Builds\r",
+							"// 1) verify we got a 200\r",
+							"pm.test(\"List Builds – status code is 200\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2) parse JSON\r",
+							"let json = pm.response.json();\r",
+							"\r",
+							"// 3) it should be an array with at least one build\r",
+							"pm.test(\"List Builds – returns an array of builds\", () => {\r",
+							"  pm.expect(json).to.be.an(\"array\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"// 4) verify the fields you care about\r",
+							"pm.test(\"List Builds – first build has correct structure\", () => {\r",
+							"  const b = json[0].automation_build;\r",
+							"  pm.expect(b).to.have.property(\"hashed_id\");\r",
+							"  pm.expect(b).to.have.property(\"name\");\r",
+							"  pm.expect(b).to.have.property(\"status\", \"done\");\r",
+							"  pm.expect(b).to.have.property(\"public_url\").that.includes(\"automate.browserstack.com\");\r",
+							"});\r",
+							"\r",
+							"// 5) stash that hashed_id into an env var for your next calls\r",
+							"pm.environment.set(\"build_id\", json[0].automation_build.hashed_id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{bst_user}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{bst_key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/builds.json",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"builds.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Sessions for Build",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1) status 200\r",
+							"pm.test(\"List Sessions – status 200\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2) parse JSON and make sure it's an array\r",
+							"let sessions = pm.response.json();\r",
+							"pm.test(\"List Sessions – returns array\", () => {\r",
+							"  pm.expect(sessions).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"// 3) count by browser\r",
+							"let counts = sessions.reduce((acc, o) => {\r",
+							"  let b = (o.automation_session || o).browser.toLowerCase();\r",
+							"  acc[b] = (acc[b] || 0) + 1;\r",
+							"  return acc;\r",
+							"}, {});\r",
+							"\r",
+							"// pull the numbers out (default to 0 if missing)\r",
+							"let chromeCount  = counts.chrome  || 0;\r",
+							"let firefoxCount = counts.firefox || 0;\r",
+							"let edgeCount    = counts.edge    || 0;\r",
+							"let totalCount   = sessions.length;\r",
+							"\r",
+							"// 4) pull your expected values and parse them\r",
+							"const expectedChrome  = parseInt(pm.environment.get(\"EXPECTED_CHROME\"),  10);\r",
+							"const expectedFirefox = parseInt(pm.environment.get(\"EXPECTED_FIREFOX\"), 10);\r",
+							"const expectedEdge    = parseInt(pm.environment.get(\"EXPECTED_EDGE\"),    10);\r",
+							"const expectedTotal   = parseInt(pm.environment.get(\"EXPECTED_TOTAL\"),   10);\r",
+							"\r",
+							"// 5) your assertions\r",
+							"pm.test(\"Chrome sessions\", () => {\r",
+							"  pm.expect(chromeCount).to.eql(expectedChrome);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Firefox sessions\", () => {\r",
+							"  pm.expect(firefoxCount).to.eql(expectedFirefox);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Edge sessions\", () => {\r",
+							"  pm.expect(edgeCount).to.eql(expectedEdge);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Total sessions\", () => {\r",
+							"  pm.expect(totalCount).to.eql(expectedTotal);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{bst_user}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{bst_key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/builds/{{build_id}}/sessions.json",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"builds",
+						"{{build_id}}",
+						"sessions.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Session Details by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1) status 200\r",
+							"pm.test(\"Session Details – status code is 200\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2) valid JSON body with an automation_session object\r",
+							"let s = pm.response.json().automation_session;\r",
+							"pm.test(\"Session Details – response has automation_session\", () => {\r",
+							"  pm.expect(s).to.be.an(\"object\");\r",
+							"});\r",
+							"\r",
+							"// 3) required properties are present\r",
+							"pm.test(\"Session Details – required fields exist\", () => {\r",
+							"  pm.expect(s).to.have.property(\"hashed_id\", pm.environment.get(\"session_id\"));\r",
+							"  pm.expect(s).to.have.property(\"status\");\r",
+							"  pm.expect(s).to.have.property(\"video_url\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{bst_user}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{bst_key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/sessions/{{session_id}}.json",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"sessions",
+						"{{session_id}}.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download Session Logs (ZIP)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1) status 200\r",
+							"pm.test(\"Session Logs – status code is 200\", () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2) Content-Type is either zip or plain text\r",
+							"pm.test(\"Session Logs – valid Content-Type\", () => {\r",
+							"  const ct = pm.response.headers.get(\"Content-Type\");\r",
+							"  pm.expect(ct).to.match(/(application\\/zip|text\\/plain)/);\r",
+							"});\r",
+							"\r",
+							"// 3) non-empty body\r",
+							"pm.test(\"Session Logs – body is not empty\", () => {\r",
+							"  pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{bst_key}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{bst_user}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/sessions/{{session_id}}/logs?download=true",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"sessions",
+						"{{session_id}}",
+						"logs"
+					],
+					"query": [
+						{
+							"key": "download",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Session Video (invalid)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1) status should be 404\r",
+							"pm.test(\"Video JSON – status code is 404\", () => {\r",
+							"  pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"// 2) body should be HTML error page\r",
+							"pm.test(\"Video JSON – returns HTML error\", () => {\r",
+							"  const ct = pm.response.headers.get(\"Content-Type\");\r",
+							"  pm.expect(ct).to.match(/text\\/html/);\r",
+							"  pm.expect(pm.response.text()).to.include(\"<h1>404 Not Found</h1>\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "{{bst_user}}",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "{{bst_key}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/sessions/{{BAD_SESSION_ID}}/video.json",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"sessions",
+						"{{BAD_SESSION_ID}}",
+						"video.json"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
