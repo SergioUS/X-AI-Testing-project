@@ -29,9 +29,9 @@ import helpers_N as hn
 import time
 
 #report runners
-import HtmlTestRunner
+#import HtmlTestRunner
 
-#import AllureReports
+import AllureReports
 
 class Chrome_Negative_Test(unittest.TestCase):
     def setUp(self):
@@ -345,8 +345,8 @@ class FireFox_Negative_Test(unittest.TestCase):
         except AssertionError:
             print("float number wasn't accepted")
 
-if __name__ == '__main__':
-    unittest.main(testRunner=HtmlTestRunner.HTMLTestRunner(output='./HtmlReports'))
+if __name__ == "__main__":
+    unittest.main(AllureReports)
 
 
 
