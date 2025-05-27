@@ -53,3 +53,6 @@ _[Lilit Todorova](https://www.linkedin.com/in/lilith-todorova/)_
 
 <code><img width="1%" src="https://github.com/user-attachments/assets/d8634330-234a-4e0e-b163-b8859a1b66bf"></code>
 _[Ilhom Artykov](https://www.linkedin.com/in/ilhom-artykov/)_
+
+<code><img width="1%" src="https://github.com/user-attachments/assets/d8634330-234a-4e0e-b163-b8859a1b66bf"></code>
+_[Vik Pervushkin](www.linkedin.com/in/viktp)_
