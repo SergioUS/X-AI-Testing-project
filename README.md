@@ -45,11 +45,20 @@ We are up for the challenge: **_[ResearchersBringOnTheBugs](https://x.ai/securit
 
 
 
-<code><img width="1%" src="https://github.com/user-attachments/assets/d8634330-234a-4e0e-b163-b8859a1b66bf"></code>
-_[Lana Chovgan](https://www.linkedin.com/in/lana-chovgan/)_
+
+ 
+
+
 
 <code><img width="1%" src="https://github.com/user-attachments/assets/d8634330-234a-4e0e-b163-b8859a1b66bf"></code>
-_[Lilit Todorova](https://www.linkedin.com/in/lilith-todorova/)_
+_[Lana Chovgan](https://www.linkedin.com/in/lana-chovgan/)_ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Project Manager</strong>
+<code><img width="1%" src="https://github.com/user-attachments/assets/d8634330-234a-4e0e-b163-b8859a1b66bf"></code>
+_[Sergey Efremov](https://www.linkedin.com/in/sefremoff/)_ 
+
+<code><img width="1%" src="https://github.com/user-attachments/assets/d8634330-234a-4e0e-b163-b8859a1b66bf"></code>
+_[Lilit Todorova](https://www.linkedin.com/in/lilith-todorova/)_ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Team Lead</strong>
+<code><img width="1%" src="https://github.com/user-attachments/assets/d8634330-234a-4e0e-b163-b8859a1b66bf"></code>
+_[Tatsiana Lentz](https://www.linkedin.com/in/tatsianalentz/)_ 
 
 <code><img width="1%" src="https://github.com/user-attachments/assets/d8634330-234a-4e0e-b163-b8859a1b66bf"></code>
 _[Ilhom Artykov](https://www.linkedin.com/in/ilhom-artykov/)_
