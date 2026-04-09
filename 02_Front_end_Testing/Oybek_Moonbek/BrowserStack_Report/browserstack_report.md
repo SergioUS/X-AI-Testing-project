@@ -1,18 +1,19 @@
 
-================ BROWSERSTACK INTEGRATION ================
+================ BROWSERSTACK EXECUTION  ================
 
-[//]: # (BrowserStack Integration)
-
-[//]: # ()
-[//]: # (Jira ticket: QAPROJECT-XXX)
-
-[//]: # (https://your-company.atlassian.net/browse/QAPROJECT-XXX)
-
-[//]: # ()
-[//]: # (Subtask: QAPROJECT-XXX — Attach BrowserStack execution results)
+BrowserStack Execution
 
 
-## 🔗 BrowserStack Execution
+Jira ticket: QAPROJECT-896
+
+https://qasvus.atlassian.net/browse/QAPROJECT-896
+
+
+Subtask: QAPROJECT-897 — Attach BrowserStack execution results
+
+
+
+##  BrowserStack Execution
 
 [View BrowserStack Execution (Video & Logs)](https://automate.browserstack.com/projects/BrowserStack+Samples/builds/browserstack+build/24?public_token=d0294e6f920507b5f876db5d0f27f883e30bf6b9ac23b0c0792617d7c172671d)
 
