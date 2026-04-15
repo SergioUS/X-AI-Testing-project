@@ -44,11 +44,11 @@
 
 ## Run
 ### Postman Run Report
-![Postman_Run.png](Postman_Run.png)
+![Postman_Run.png](chat_images/Postman_Run.png)
 ### Simple HTML Newman Report
-![img_1.png](img_1.png)
+![img_1.png](chat_images/img_1.png)
 ### Newman Run Report
-![img.png](img.png)
+![img.png](chat_images/img.png)
 
 ```bash
 newman run collections/Grok_Chat_API.postman_collection.json \
