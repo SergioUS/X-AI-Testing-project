@@ -4,13 +4,31 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import StaleElementReferenceException
-
+import undetected_chromedriver as uc
+from selenium import webdriver
+from selenium.webdriver.edge.options import Options as EdgeOptions
 
 class Helper:
+    def make_driver(browser: str):
+        b = browser.lower()
+
+        if b == "chrome":
+            options = uc.ChromeOptions()
+            driver = uc.Chrome(options=options, use_subprocess=False, version_main=146)
+            driver.set_window_size(1920, 1024)
+            return driver
+
+        if b == "edge":
+            options = EdgeOptions()
+            driver = webdriver.Edge(options=options)
+            driver.set_window_size(1920, 1024)
+            return driver
+
+        raise ValueError(f"Unsupported browser: '{browser}'. Use chrome / edge.")
 
     URL = "https://x.ai"
 
-    # ===== ЛОКАТОРЫ МЕНЮ =====
+    # ===== MENU =====
     GROK = (By.XPATH, "//nav//a[@href='/grok']")
     API = (By.XPATH, "//nav//a[@href='/api']")
     COMPANY = (By.XPATH, "//nav//a[@href='/company']")
@@ -22,7 +40,7 @@ class Helper:
     X_LINK = (By.XPATH, "//nav//a[@href='https://x.com']")
     TRY_GROK = (By.XPATH, "//a[contains(., 'Try Grok')]")
 
-    # ===== ЛОКАТОРЫ СЕКЦИЙ СТРАНИЦЫ =====
+    # ===== SECTION MENU =====
     HERO_HEADING = (By.XPATH, "//h1[contains(., 'AI for all humanity')]")
     UNDERSTAND_UNIVERSE = (By.XPATH, "//canvas[@data-engine]")
     SECTION_GROK = (By.XPATH, "//h3[contains(text(), 'Grok') and contains(@class, 'group-hover')]")
@@ -31,14 +49,14 @@ class Helper:
     SUPERGROK = (By.XPATH, "//*[contains(text(), 'SuperGrok')]")
     LATEST_NEWS = (By.XPATH, "//*[contains(., 'Latest news')]")
 
-    # ===== КНОПКИ СЕКЦИЙ =====
+    # ===== BTN SECTION =====
     BTN_USE_NOW = (By.XPATH, " //button[contains(text(), 'Use now')]")
     BTN_BUILD_NOW = (By.XPATH, " //button[contains(text(), 'Build now')]")
     BTN_LEARN_MORE = (By.XPATH, " //button[contains(text(), 'Learn more')]")
     BTN_SIGN_UP_NOW = (By.XPATH, "//a[contains(text(), 'Sign up now')]")
     BTN_EXPLORE_MORE = (By.XPATH, "//a[contains(text(), 'Explore more')]")
 
-    # ===== ФУТЕР =====
+    # ===== FOOTER =====
     FOOTER = (By.XPATH, "//*[contains(@style, 'footer')]")
 
     # TRY GROK ON
@@ -71,7 +89,7 @@ class Helper:
     FOOTER_LEGAL = (By.XPATH, "//a[contains(@href, '/legal')]")
     FOOTER_STATUS = (By.XPATH, "//a[contains(@href, 'status.')]")
 
-    # ===== ЛОКАТОРЫ SHOP =====
+    # ===== SHOP =====
     SHOP_LOGO = (By.XPATH, "//*[@href='/']")
     SHOP_COLLECTION = (By.XPATH, "//*[contains(., 'Collection')]")
     SHOP_PRODUCT_CARD = (By.XPATH, "//*[@class='product-card']")
@@ -80,22 +98,25 @@ class Helper:
     SHOP_ADD_TO_CART = (By.XPATH, "//*[contains(text(), 'Add To Cart')]")
     SHOP_CART_BODY = (By.XPATH, "//*[@class='order-summary__body']")
     SHOP_QTY = (By.XPATH, "(//input[@name='updates[]'])[1]")
+    SHOP_UPDATE_BTN = (By.XPATH, "//button[contains(text(), 'needs to be updated')]")
     SHOP_CHECKOUT_BTN = (By.XPATH, "//button[@name='checkout']")
     SHOP_CHECKOUT_H1 = (By.XPATH, "//strong[contains(text(), 'Information')]")
     SHOP_EMAIL_FIELD = (By.XPATH, "//input[@id='email']")
     SHOP_SHIPPING_HEADER = (By.XPATH, "//h2[@id='deliveryAddress']")
     SHOP_BREADCRUMB = (By.XPATH, "//*[contains(., 'Cart') and contains(., 'Shipping')]")
+    SHOP_BTN = (By.XPATH, "//button[contains(@class,'minmaxify-ok')]")
 
-    # ===== ЛОКАТОРЫ ЧАТБОТА =====
+    # ===== CHATBOT =====
     CHAT_INPUT = (By.XPATH, "//textarea")
+    CHAT_INPUT_GROK = (By.XPATH, "//*[@data-placeholder]")
     CHAT_SEND_BTN = (By.XPATH, "//button[@type='submit']")
     CHAT_RESPONSE = (By.XPATH, "//p[contains(@class, 'last')]")
     ERROR_MESSAGE = (By.XPATH, "//*[contains(text(), 'limit reached')]")
 
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 15)
-        self.wait_long = WebDriverWait(driver, 40)
+        self.wait = WebDriverWait(driver, 5)
+        self.wait_long = WebDriverWait(driver, 10)
 
     def open(self):
         self.driver.get(self.URL)
@@ -148,7 +169,6 @@ class Helper:
             self.wait.until(EC.element_to_be_clickable(locator)).click()
         except Exception:
             self.driver.execute_script("arguments[0].click();", element)
-        # Для SPA (React) ждём смены URL, fallback — readyState
         try:
             self.wait.until(lambda d: d.current_url != current_url)
         except Exception:
@@ -171,7 +191,31 @@ class Helper:
     def scroll_by(self, pixels):
         self.driver.execute_script(f"window.scrollBy(0, {pixels});")
 
-    # ===== МЕТОДЫ ЧАТА =====
+        # ===== SHOP =====
+
+    def add_first_product_to_cart(self, shop_url="https://shop.x.com"):
+        self.driver.get(shop_url)
+        self.wait_long.until(
+            EC.presence_of_element_located((By.TAG_NAME, "body"))
+        )
+        first_product = self.wait_long.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//*[@class='product-card'][1]//a")
+            )
+        )
+        first_product.click()
+        self.wait_long.until(
+            lambda d: d.execute_script("return document.readyState") == "complete"
+        )
+        add_btn = self.wait_long.until(
+            EC.element_to_be_clickable(self.SHOP_ADD_TO_CART)
+        )
+        add_btn.click()
+        self.wait_long.until(
+            lambda d: "/cart" in d.current_url
+        )
+
+    # ===== CHAT =====
     def type_message(self, text):
         input_field = self.wait.until(EC.visibility_of_element_located(self.CHAT_INPUT))
         input_field.clear()
@@ -191,7 +235,6 @@ class Helper:
             input_field = self.wait.until(EC.visibility_of_element_located(self.CHAT_INPUT))
             return input_field.get_attribute("value") or ""
         except TimeoutException:
-            # Some chat UIs temporarily remove or replace the input after send.
             return ""
 
     def wait_for_response(self):
